@@ -31,6 +31,7 @@
     overflow:hidden;
   }
   .header{
+    position:relative;
     background:linear-gradient(135deg,var(--primary),var(--primary-dark));
     color:#fff;
     padding:24px 20px;
@@ -40,6 +41,104 @@
     margin:0;
     font-size:20px;
     letter-spacing:0.5px;
+  }
+  .form-error{
+    display:none;
+    margin-bottom:12px;
+    padding:10px 12px;
+    border-radius:8px;
+    background:#fef2f2;
+    border:1px solid #fecaca;
+    color:#b91c1c;
+    font-size:13px;
+    font-weight:600;
+    text-align:left;
+  }
+  .form-error.show{
+    display:block;
+  }
+  .form-status{
+    display:none;
+    margin-bottom:12px;
+    padding:10px 12px;
+    border-radius:8px;
+    background:#eff6ff;
+    border:1px solid #bfdbfe;
+    color:#1d4ed8;
+    font-size:13px;
+    font-weight:600;
+    text-align:left;
+  }
+  .form-status.show{
+    display:block;
+  }
+  .form-status.success{
+    background:#f0fdf4;
+    border-color:#bbf7d0;
+    color:#15803d;
+  }
+  .modal-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,0.5);
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:100;
+  }
+  .modal-overlay.show{
+    display:flex;
+  }
+  .modal{
+    background:#fff;
+    border-radius:12px;
+    padding:20px;
+    max-width:400px;
+    width:100%;
+  }
+  .modal h3{
+    margin:0 0 8px 0;
+    font-size:16px;
+  }
+  .modal-note{
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.5;
+    margin-bottom:14px;
+  }
+  .modal label{
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:4px;
+    display:block;
+    margin-top:10px;
+  }
+  .modal input{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:10px;
+    font-size:14px;
+    background:#f8fafc;
+  }
+  .modal-actions{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+  }
+  .btn-secondary{
+    flex:1;
+    background:#f1f5f9;
+    color:var(--text);
+    border:none;
+    border-radius:8px;
+    padding:12px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .modal-actions .btn-save{
+    flex:1;
   }
   .section{
     padding:18px 20px;
@@ -140,6 +239,68 @@
     cursor:pointer;
     padding:4px 8px;
   }
+  .file-drop{
+    position:relative;
+    border:2px dashed var(--border);
+    border-radius:8px;
+    background:#f8fafc;
+    padding:16px 12px;
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  .file-drop:active, .file-drop.has-file{
+    border-color:var(--primary);
+    background:#eff6ff;
+  }
+  .file-drop input[type=file]{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    opacity:0;
+    cursor:pointer;
+  }
+  .file-drop-text{
+    font-size:13px;
+    color:var(--text);
+    pointer-events:none;
+  }
+  .file-drop-sub{
+    display:block;
+    margin-top:4px;
+    font-size:11px;
+    color:var(--muted);
+  }
+  .file-error{
+    display:none;
+    margin-top:8px;
+    padding:8px 10px;
+    border-radius:6px;
+    background:#fef2f2;
+    border:1px solid #fecaca;
+    color:#b91c1c;
+    font-size:12px;
+    font-weight:600;
+  }
+  .file-error.show{
+    display:block;
+  }
+  .file-selected{
+    display:none;
+    margin-top:8px;
+    padding:8px 10px;
+    border-radius:6px;
+    background:#f0fdf4;
+    border:1px solid #bbf7d0;
+    color:#15803d;
+    font-size:12px;
+    font-weight:600;
+    word-break:break-all;
+  }
+  .file-selected.show{
+    display:block;
+  }
   .save-wrap{
     padding:20px;
     text-align:center;
@@ -192,13 +353,13 @@
     <div class="row">
       <div class="field">
         <label>Name *</label>
-        <input type="text" placeholder="Full name" required>
+        <input type="text" id="clientName" placeholder="Full name" required>
       </div>
     </div>
     <div class="row">
       <div class="field">
         <label>Email *</label>
-        <input type="email" placeholder="name@example.com" required>
+        <input type="email" id="clientEmail" placeholder="name@example.com" required>
       </div>
     </div>
   </div>
@@ -207,8 +368,13 @@
     <div class="section-title">📚 EBOOK SOURCE</div>
     <div class="row">
       <div class="field">
-        <label>Ebook source (title / file / link)</label>
-        <textarea placeholder="e.g. book title, file name, or source link"></textarea>
+        <label>Upload source file *</label>
+        <div class="file-drop" id="fileDrop">
+          <input type="file" id="sourceFile" accept=".epub,.pdf,.azw,.azw1,.azw3,.azw4,.kfx,.mobi,.prc,.tpz,.topaz,.txt,.html,.docx">
+          <div class="file-drop-text" id="fileDropText">📎 Tap to choose file<br><span class="file-drop-sub">EPUB, PDF, AZW, AZW1, AZW3, AZW4, KFX, MOBI, PRC, TPZ, TOPAZ, TXT, HTML, DOCX — max 50MB</span></div>
+        </div>
+        <div class="file-error" id="fileError"></div>
+        <div class="file-selected" id="fileSelected"></div>
       </div>
     </div>
   </div>
@@ -241,11 +407,15 @@
   </div>
 
   <div class="save-wrap">
-    <button class="btn-save" id="saveBtn">📥 SAVE AS PDF</button>
-    <div class="note">This will save a snapshot of the completed receipt as a PDF file.</div>
+    <div class="form-error" id="formError"></div>
+    <div class="form-status" id="formStatus"></div>
+    <button class="btn-save" id="submitBtn">✅ SUBMIT</button>
+    <div class="note">This will upload the source file and a PDF copy of this receipt.</div>
   </div>
 
 </div>
+
+
 
 <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -259,6 +429,49 @@
     document.getElementById('date').value = d;
     document.getElementById('time').value = h+':'+m;
   })();
+
+  // Ebook source file validation
+  var ALLOWED_EXT = ['epub','pdf','azw','azw1','azw3','azw4','kfx','mobi','prc','tpz','topaz','txt','html','docx'];
+  var MAX_SIZE = 50 * 1024 * 1024; // 50MB
+  var fileInput = document.getElementById('sourceFile');
+  var fileDrop = document.getElementById('fileDrop');
+  var fileError = document.getElementById('fileError');
+  var fileSelected = document.getElementById('fileSelected');
+  var validFileChosen = false;
+
+  fileInput.addEventListener('change', function(){
+    fileError.classList.remove('show');
+    fileSelected.classList.remove('show');
+    fileDrop.classList.remove('has-file');
+    validFileChosen = false;
+
+    var file = fileInput.files[0];
+    if(!file){
+      return;
+    }
+
+    var ext = file.name.split('.').pop().toLowerCase();
+
+    if(file.size > MAX_SIZE){
+      fileError.textContent = 'File size exceeds 50MB';
+      fileError.classList.add('show');
+      fileInput.value = '';
+      return;
+    }
+
+    if(ALLOWED_EXT.indexOf(ext) === -1){
+      fileError.textContent = 'Source file extension is not supported.';
+      fileError.classList.add('show');
+      fileInput.value = '';
+      return;
+    }
+
+    validFileChosen = true;
+    var sizeMB = (file.size / (1024*1024)).toFixed(2);
+    fileSelected.textContent = '✅ ' + file.name + ' (' + sizeMB + ' MB)';
+    fileSelected.classList.add('show');
+    fileDrop.classList.add('has-file');
+  });
 
   // Signature pad
   var canvas = document.getElementById('sigPad');
@@ -317,19 +530,148 @@
     ctx.clearRect(0,0,canvas.width,canvas.height);
   });
 
-  // Save as PDF
-  document.getElementById('saveBtn').addEventListener('click', function(){
-    var agree = document.getElementById('agree');
-    if(!agree.checked){
-      alert('Please agree to the terms & conditions before saving.');
+  // ---- Configuration ----
+  // Paste the Web app URL you get from deploying AppsScript-Code.gs (Deploy -> New deployment -> Web app).
+  // This is set once by you before publishing the page - clients never see or touch this.
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw555vJRW7WBFCWb1pwrLrfyKQjOdJXkxXAmyTZl8BZRgCpQ3C-N071sA5abFnFfawaRA/exec';
+
+  // ---- Helpers ----
+  function fileToBase64(file){
+    return new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onload = function(){
+        var result = reader.result;
+        resolve(result.substring(result.indexOf(',') + 1)); // strip data: prefix
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+  function blobToBase64(blob){
+    return fileToBase64(blob);
+  }
+
+  function isSignatureEmpty(){
+    var blank = document.createElement('canvas');
+    blank.width = canvas.width;
+    blank.height = canvas.height;
+    return canvas.toDataURL() === blank.toDataURL();
+  }
+
+  // Builds "namewithoutspacesddmmyyyy" from client name + date field (yyyy-mm-dd)
+  function buildBaseFilename(name, dateStr){
+    var cleanName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+    var parts = dateStr.split('-'); // yyyy-mm-dd
+    var ddmmyyyy = parts[2] + parts[1] + parts[0];
+    return cleanName + ddmmyyyy;
+  }
+
+  var MIME_BY_EXT = {
+    epub:'application/epub+zip', pdf:'application/pdf', txt:'text/plain',
+    html:'text/html', docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    mobi:'application/x-mobipocket-ebook', azw:'application/vnd.amazon.ebook',
+    azw1:'application/vnd.amazon.ebook', azw3:'application/vnd.amazon.ebook',
+    azw4:'application/vnd.amazon.ebook', kfx:'application/octet-stream',
+    prc:'application/x-mobipocket-ebook', tpz:'application/x-mobipocket-ebook',
+    topaz:'application/x-mobipocket-ebook'
+  };
+
+  async function submitToAppsScript(payload){
+    // Content-Type: text/plain avoids a CORS preflight request, which Apps Script
+    // web apps don't handle - the script still receives and parses the JSON fine.
+    var res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    var result;
+    try{
+      result = await res.json();
+    }catch(e){
+      throw new Error('Unexpected response from upload service. Check the Apps Script deployment.');
+    }
+    if(!result.success){
+      throw new Error(result.error || 'Upload failed.');
+    }
+    return result;
+  }
+
+  // ---- Validation ----
+  function validateForm(){
+    var dateVal = document.getElementById('date').value;
+    var timeVal = document.getElementById('time').value;
+    var nameVal = document.getElementById('clientName').value.trim();
+    var emailVal = document.getElementById('clientEmail').value.trim();
+    var agreeChecked = document.getElementById('agree').checked;
+
+    if(!dateVal) return 'Date not filled';
+    if(!timeVal) return 'Time not filled';
+    if(!nameVal) return 'Name not filled';
+    if(!emailVal) return 'Email not filled';
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) return 'Email is not valid';
+    if(!fileInput.files[0] || !validFileChosen) return 'Ebook source file not filled';
+    if(isSignatureEmpty()) return 'Signature not filled';
+    if(!agreeChecked) return 'Agreement checkbox not filled';
+    return null;
+  }
+
+  // ---- Submit ----
+  var formError = document.getElementById('formError');
+  var formStatus = document.getElementById('formStatus');
+  var submitBtn = document.getElementById('submitBtn');
+
+  function showError(msg){
+    formError.textContent = msg;
+    formError.classList.add('show');
+    formStatus.classList.remove('show', 'success');
+  }
+  function showStatus(msg, isSuccess){
+    formStatus.textContent = msg;
+    formStatus.classList.add('show');
+    if(isSuccess) formStatus.classList.add('success');
+    else formStatus.classList.remove('success');
+    formError.classList.remove('show');
+  }
+
+  submitBtn.addEventListener('click', async function(){
+    formError.classList.remove('show');
+    formStatus.classList.remove('show', 'success');
+
+    var validationMsg = validateForm();
+    if(validationMsg){
+      showError(validationMsg);
       return;
     }
-    var clearBtnRow = document.querySelector('.sig-actions');
-    var saveWrap = document.querySelector('.save-wrap');
-    clearBtnRow.style.display = 'none';
-    saveWrap.style.display = 'none';
 
-    html2canvas(document.getElementById('receipt'), {scale:2, backgroundColor:'#ffffff'}).then(function(canvasImg){
+    if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf('PASTE_YOUR') === 0){
+      showError('Upload destination is not configured. Please contact the site owner.');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    try{
+      var name = document.getElementById('clientName').value.trim();
+      var dateVal = document.getElementById('date').value;
+      var baseFilename = buildBaseFilename(name, dateVal);
+
+      var sourceFile = fileInput.files[0];
+      var sourceExt = sourceFile.name.split('.').pop().toLowerCase();
+      var sourceMime = MIME_BY_EXT[sourceExt] || 'application/octet-stream';
+
+      showStatus('Preparing source file...', false);
+      var sourceBase64 = await fileToBase64(sourceFile);
+
+      showStatus('Generating receipt PDF...', false);
+
+      var clearBtnRow = document.querySelector('.sig-actions');
+      var saveWrap = document.querySelector('.save-wrap');
+      clearBtnRow.style.display = 'none';
+      saveWrap.style.display = 'none';
+
+      var canvasImg = await html2canvas(document.getElementById('receipt'), {scale:2, backgroundColor:'#ffffff'});
+
       clearBtnRow.style.display = '';
       saveWrap.style.display = '';
 
@@ -354,8 +696,25 @@
         heightLeft -= pageHeight;
       }
 
-      pdf.save('Ebook_Conversion_Receipt.pdf');
-    });
+      var pdfBlob = pdf.output('blob');
+      var pdfBase64 = await blobToBase64(pdfBlob);
+
+      showStatus('Uploading to Google Drive...', false);
+      await submitToAppsScript({
+        sourceFilename: baseFilename + '.' + sourceExt,
+        sourceMime: sourceMime,
+        sourceBase64: sourceBase64,
+        pdfFilename: baseFilename + '.pdf',
+        pdfBase64: pdfBase64
+      });
+
+      showStatus('✅ Submitted! Your ebook source and receipt have been uploaded successfully.', true);
+    }catch(err){
+      showError('Upload failed: ' + err.message);
+    }finally{
+      submitBtn.disabled = false;
+      submitBtn.textContent = '✅ SUBMIT';
+    }
   });
 </script>
 
