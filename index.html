@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Ebook Conversion Receipt</title>
+<style>
+  :root{
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+    --bg:#f1f5f9;
+    --card:#ffffff;
+    --text:#1e293b;
+    --muted:#64748b;
+    --border:#e2e8f0;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    padding:16px;
+  }
+  .receipt{
+    max-width:520px;
+    margin:0 auto;
+    background:var(--card);
+    border-radius:16px;
+    box-shadow:0 4px 16px rgba(0,0,0,0.08);
+    overflow:hidden;
+  }
+  .header{
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:#fff;
+    padding:24px 20px;
+    text-align:center;
+  }
+  .header h1{
+    margin:0;
+    font-size:20px;
+    letter-spacing:0.5px;
+  }
+  .section{
+    padding:18px 20px;
+    border-bottom:1px solid var(--border);
+  }
+  .section-title{
+    font-size:14px;
+    font-weight:700;
+    color:var(--primary-dark);
+    margin-bottom:12px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .row{
+    display:flex;
+    gap:12px;
+    margin-bottom:12px;
+  }
+  .field{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+  }
+  label{
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:4px;
+  }
+  input[type=text], input[type=email], input[type=date], input[type=time], textarea{
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:10px;
+    font-size:14px;
+    color:var(--text);
+    background:#f8fafc;
+  }
+  textarea{
+    resize:vertical;
+    min-height:60px;
+    font-family:inherit;
+  }
+  input:focus, textarea:focus{
+    outline:none;
+    border-color:var(--primary);
+    background:#fff;
+  }
+  .terms{
+    font-size:13px;
+    line-height:1.6;
+    color:var(--text);
+  }
+  .terms ol{
+    padding-left:20px;
+    margin:0 0 12px 0;
+  }
+  .terms li{
+    margin-bottom:10px;
+  }
+  .agree-row{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    margin-top:8px;
+    font-size:13px;
+    font-weight:600;
+  }
+  .agree-row input{
+    margin-top:2px;
+    width:18px;
+    height:18px;
+    flex-shrink:0;
+  }
+  .sig-wrap{
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:#f8fafc;
+    position:relative;
+    touch-action:none;
+  }
+  canvas#sigPad{
+    width:100%;
+    height:150px;
+    display:block;
+    border-radius:8px;
+  }
+  .sig-actions{
+    display:flex;
+    justify-content:flex-end;
+    margin-top:8px;
+  }
+  .btn-clear{
+    background:none;
+    border:none;
+    color:var(--primary-dark);
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    padding:4px 8px;
+  }
+  .save-wrap{
+    padding:20px;
+    text-align:center;
+  }
+  .btn-save{
+    width:100%;
+    background:var(--primary);
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    padding:14px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .btn-save:active{
+    background:var(--primary-dark);
+  }
+  .note{
+    font-size:11px;
+    color:var(--muted);
+    margin-top:10px;
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+
+<div class="receipt" id="receipt">
+
+  <div class="header">
+    <h1>📖 EBOOK CONVERSION RECEIPT</h1>
+  </div>
+
+  <div class="section">
+    <div class="row">
+      <div class="field">
+        <label>Date</label>
+        <input type="date" id="date">
+      </div>
+      <div class="field">
+        <label>Time</label>
+        <input type="time" id="time">
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">👤 CLIENT INFO</div>
+    <div class="row">
+      <div class="field">
+        <label>Name *</label>
+        <input type="text" placeholder="Full name" required>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>Email *</label>
+        <input type="email" placeholder="name@example.com" required>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📚 EBOOK SOURCE</div>
+    <div class="row">
+      <div class="field">
+        <label>Ebook source (title / file / link)</label>
+        <textarea placeholder="e.g. book title, file name, or source link"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">✅ ACKNOWLEDGMENT</div>
+    <div class="terms">
+      <ol>
+        <li>By engaging this service, the buyer confirms that the provided ebook source does not infringe any copyright or other intellectual property rights and agrees to indemnify and hold the service provider harmless against any claims, liabilities, damages, or expenses arising from any such infringement.</li>
+        <li>Buyer will endeavor to convert the book within 1 hour of receipt of the source file.</li>
+        <li>Buyer must make full payment via Paynow/Paylah before the Seller emails the converted book.</li>
+        <li>Once the Seller emails the book to the Buyer, it will be the end of this service.</li>
+        <li>There will be no refund for any reason.</li>
+      </ol>
+    </div>
+    <label class="agree-row">
+      <input type="checkbox" id="agree">
+      <span>I agree to the terms &amp; conditions above.</span>
+    </label>
+  </div>
+
+  <div class="section">
+    <div class="section-title">✍️ CLIENT SIGNATURE</div>
+    <div class="sig-wrap">
+      <canvas id="sigPad"></canvas>
+    </div>
+    <div class="sig-actions">
+      <button class="btn-clear" id="clearSig">Clear</button>
+    </div>
+  </div>
+
+  <div class="save-wrap">
+    <button class="btn-save" id="saveBtn">📥 SAVE AS PDF</button>
+    <div class="note">This will save a snapshot of the completed receipt as a PDF file.</div>
+  </div>
+
+</div>
+
+<script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script>
+  // Auto-fill date and time
+  (function(){
+    var now = new Date();
+    var d = now.toISOString().slice(0,10);
+    var h = String(now.getHours()).padStart(2,'0');
+    var m = String(now.getMinutes()).padStart(2,'0');
+    document.getElementById('date').value = d;
+    document.getElementById('time').value = h+':'+m;
+  })();
+
+  // Signature pad
+  var canvas = document.getElementById('sigPad');
+  var ctx = canvas.getContext('2d');
+  var drawing = false;
+  var last = {x:0,y:0};
+
+  function resizeCanvas(){
+    var ratio = window.devicePixelRatio || 1;
+    var rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * ratio;
+    canvas.height = rect.height * ratio;
+    ctx.scale(ratio, ratio);
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#1e293b';
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  function getPos(e){
+    var rect = canvas.getBoundingClientRect();
+    if(e.touches && e.touches.length){
+      return {x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top};
+    }
+    return {x: e.clientX - rect.left, y: e.clientY - rect.top};
+  }
+
+  function start(e){
+    drawing = true;
+    last = getPos(e);
+    e.preventDefault();
+  }
+  function move(e){
+    if(!drawing) return;
+    var pos = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(last.x, last.y);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+    last = pos;
+    e.preventDefault();
+  }
+  function end(e){
+    drawing = false;
+  }
+
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', end);
+  canvas.addEventListener('touchstart', start, {passive:false});
+  canvas.addEventListener('touchmove', move, {passive:false});
+  canvas.addEventListener('touchend', end);
+
+  document.getElementById('clearSig').addEventListener('click', function(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+  });
+
+  // Save as PDF
+  document.getElementById('saveBtn').addEventListener('click', function(){
+    var agree = document.getElementById('agree');
+    if(!agree.checked){
+      alert('Please agree to the terms & conditions before saving.');
+      return;
+    }
+    var clearBtnRow = document.querySelector('.sig-actions');
+    var saveWrap = document.querySelector('.save-wrap');
+    clearBtnRow.style.display = 'none';
+    saveWrap.style.display = 'none';
+
+    html2canvas(document.getElementById('receipt'), {scale:2, backgroundColor:'#ffffff'}).then(function(canvasImg){
+      clearBtnRow.style.display = '';
+      saveWrap.style.display = '';
+
+      var imgData = canvasImg.toDataURL('image/png');
+      var jsPDF = window.jspdf.jsPDF;
+      var pdf = new jsPDF('p','pt','a4');
+      var pageWidth = pdf.internal.pageSize.getWidth();
+      var pageHeight = pdf.internal.pageSize.getHeight();
+      var imgWidth = pageWidth;
+      var imgHeight = canvasImg.height * (imgWidth / canvasImg.width);
+
+      var heightLeft = imgHeight;
+      var position = 0;
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while(heightLeft > 0){
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save('Ebook_Conversion_Receipt.pdf');
+    });
+  });
+</script>
+
+</body>
+</html>
