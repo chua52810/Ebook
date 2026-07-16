@@ -670,14 +670,14 @@
       clearBtnRow.style.display = 'none';
       saveWrap.style.display = 'none';
 
-      var canvasImg = await html2canvas(document.getElementById('receipt'), {scale:2, backgroundColor:'#ffffff'});
+      var canvasImg = await html2canvas(document.getElementById('receipt'), {scale:1.5, backgroundColor:'#ffffff'});
 
       clearBtnRow.style.display = '';
       saveWrap.style.display = '';
 
-      var imgData = canvasImg.toDataURL('image/png');
+      var imgData = canvasImg.toDataURL('image/jpeg', 0.85);
       var jsPDF = window.jspdf.jsPDF;
-      var pdf = new jsPDF('p','pt','a4');
+      var pdf = new jsPDF({orientation:'p', unit:'pt', format:'a4', compress:true});
       var pageWidth = pdf.internal.pageSize.getWidth();
       var pageHeight = pdf.internal.pageSize.getHeight();
       var imgWidth = pageWidth;
@@ -686,13 +686,13 @@
       var heightLeft = imgHeight;
       var position = 0;
 
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
       heightLeft -= pageHeight;
 
       while(heightLeft > 0){
         position = heightLeft - imgHeight;
         pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
       }
 
@@ -701,7 +701,7 @@
 
       showStatus('Uploading to Google Drive...', false);
       await submitToAppsScript({
-        sourceFilename: baseFilename + '.' + sourceExt,
+        sourceFilename: sourceFile.name,
         sourceMime: sourceMime,
         sourceBase64: sourceBase64,
         pdfFilename: baseFilename + '.pdf',
